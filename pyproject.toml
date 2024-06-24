@@ -10,10 +10,12 @@ python = "^3.10"
 pillow = "^10.3.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
-ruff = "^0.4.10"
-mypy = "^1.10.0"
 pre-commit = "^3.7.1"
+ruff = "^0.4.10"
+
+[tool.poetry.group.test.dependencies]
+mypy = "^1.10.0"
+pytest = "^8.2.2"
 
 [tool.mypy]
 strict = true
