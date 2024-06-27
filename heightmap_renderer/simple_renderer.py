@@ -1,6 +1,6 @@
 """SimpleRenderer class module."""
 
-from PIL import Image, ImageDraw
+from PIL import Image
 from PIL.Image import Resampling
 
 
@@ -32,13 +32,16 @@ class SimpleRenderer:
             mode="L",  # 8-bit pixels, grayscale
             size=self.heightmap_size,
         )
-        draw_context = ImageDraw.Draw(self.image)
-        for x in range(self.heightmap_size[0]):
-            for y in range(self.heightmap_size[1]):
-                draw_context.point(
-                    xy=(x, y),
-                    fill=self._normalise_8bit(self.heightmap[x][y]),
-                )
+        pixel_data: list[int] = [
+            self.pixel_shade(x, y)
+            for x in range(
+                self.heightmap_size[0],
+            )
+            for y in range(
+                self.heightmap_size[1],
+            )
+        ]
+        self.image.putdata(pixel_data)  # type: ignore[no-untyped-call]
         self.image = self.image.resize(
             size=(scale * self.heightmap_size[0], scale * self.heightmap_size[1]),
             resample=Resampling.NEAREST,
@@ -49,7 +52,13 @@ class SimpleRenderer:
         """Get the size of the heightmap."""
         return len(self.heightmap), len(self.heightmap[0])
 
-    def _normalise_8bit(self, value: int) -> int:
+    def pixel_shade(self, x: int, y: int) -> int:
+        """Determine the pixel colour (shade in current implementation)."""
+        height = self.heightmap[x][y]
+        shade = float(height)
+        return self._normalise_8bit(shade)
+
+    def _normalise_8bit(self, value: float) -> int:
         """Normalise value to the range 0 <= n <= 255."""
         return int(value * 255 / self.value_range)
 
