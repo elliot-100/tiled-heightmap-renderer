@@ -1,13 +1,13 @@
-"""SimpleRenderer class module."""
+"""ReliefRenderer class module."""
 
-from PIL import Image
+from PIL import Image, ImageDraw
 from PIL.Image import Resampling
 
 from heightmap_renderer.utils import normalise_8bit
 
 
-class SimpleRenderer:
-    """Render a heightmap as an 8-bit greyscale image.
+class ReliefRenderer:
+    """Render a heightmap as an 8-bit greyscale image with relief.
 
     Heightmap input initially implemented as simple Python array (list of list).
     """
@@ -16,6 +16,7 @@ class SimpleRenderer:
         self,
         heightmap: list[list[int]],
         scale: int = 1,
+        relief_scale: int = 1,
     ) -> None:
         """
         Parameters
@@ -24,6 +25,8 @@ class SimpleRenderer:
             Values must be >= 0.
         scale
             Scale factor to apply to the image.
+        relief_scale
+            Vertical scale factor
         """
         self.heightmap = heightmap
         self.lowest = min(min(row) for row in self.heightmap)
@@ -33,22 +36,45 @@ class SimpleRenderer:
             raise ValueError(err_msg)
         self.value_range = self.highest - self.lowest
 
+        heightmap_size = self.heightmap_size
+        relief_height = relief_scale * self.value_range
+
         self.image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
-            size=self.heightmap_size,
+            size=(
+                heightmap_size[0],
+                heightmap_size[1] + relief_height,
+            ),
         )
-        pixel_data: list[int] = [
-            self.pixel_shade(x, y)
-            for x in range(
-                self.heightmap_size[0],
+        draw = ImageDraw.Draw(self.image)
+
+        for y in range(heightmap_size[0]):
+            for x in range(heightmap_size[1]):
+                draw.line(
+                    (
+                        (x, y + relief_height),
+                        (x, y + relief_height - relief_scale * heightmap[x][y]),
+                    ),
+                    width=0,
+                    fill=self.pixel_shade(x, y),
+                )
+
+        # draw extra 'front wall'
+        y = heightmap_size[0] - 1
+        for x in range(heightmap_size[1]):
+            # duplicate the last row in black,
+            # 1 pixel lower, so it doesn't hide the real last row
+            draw.line(
+                (
+                    (x, y + relief_height),
+                    (x, y + relief_height - relief_scale * heightmap[x][y] + 1),
+                ),
+                width=0,
+                fill=0,  # black
             )
-            for y in range(
-                self.heightmap_size[1],
-            )
-        ]
-        self.image.putdata(pixel_data)  # type: ignore[no-untyped-call]
+
         self.image = self.image.resize(
-            size=(scale * self.heightmap_size[0], scale * self.heightmap_size[1]),
+            size=(scale * self.image.size[0], scale * self.image.size[1]),
             resample=Resampling.NEAREST,
         )
 
