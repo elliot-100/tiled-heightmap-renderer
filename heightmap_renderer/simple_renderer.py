@@ -3,7 +3,12 @@
 from PIL import Image
 from PIL.Image import Resampling
 
-from heightmap_renderer.utils import normalise_8bit
+from heightmap_renderer.utils import (
+    heightmap_highest,
+    heightmap_lowest,
+    heightmap_size,
+    normalise_8bit,
+)
 
 
 class SimpleRenderer:
@@ -26,36 +31,29 @@ class SimpleRenderer:
             Scale factor to apply to the image.
         """
         self.heightmap = heightmap
-        self.lowest = min(min(row) for row in self.heightmap)
-        self.highest = max(max(row) for row in self.heightmap)
-        if self.lowest < 0:
-            err_msg = "Heightmap values must be >= 0."
-            raise ValueError(err_msg)
-        self.value_range = self.highest - self.lowest
+        self.lowest = heightmap_lowest(self.heightmap)
+        self.highest = heightmap_highest(self.heightmap)
+
+        the_heightmap_size = heightmap_size(self.heightmap)
 
         self.image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
-            size=self.heightmap_size,
+            size=the_heightmap_size,
         )
         pixel_data: list[int] = [
             self.pixel_shade(x, y)
             for x in range(
-                self.heightmap_size[0],
+                the_heightmap_size[0],
             )
             for y in range(
-                self.heightmap_size[1],
+                the_heightmap_size[1],
             )
         ]
         self.image.putdata(pixel_data)  # type: ignore[no-untyped-call]
         self.image = self.image.resize(
-            size=(scale * self.heightmap_size[0], scale * self.heightmap_size[1]),
+            size=(scale * the_heightmap_size[0], scale * the_heightmap_size[1]),
             resample=Resampling.NEAREST,
         )
-
-    @property
-    def heightmap_size(self) -> tuple[int, int]:
-        """Get the size of the heightmap."""
-        return len(self.heightmap), len(self.heightmap[0])
 
     def pixel_shade(self, x: int, y: int) -> int:
         """Determine the pixel colour (shade in current implementation)."""

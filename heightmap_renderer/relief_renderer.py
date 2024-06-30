@@ -3,7 +3,12 @@
 from PIL import Image, ImageDraw
 from PIL.Image import Resampling
 
-from heightmap_renderer.utils import normalise_8bit
+from heightmap_renderer.utils import (
+    heightmap_highest,
+    heightmap_lowest,
+    heightmap_size,
+    normalise_8bit,
+)
 
 
 class ReliefRenderer:
@@ -29,27 +34,23 @@ class ReliefRenderer:
             Vertical scale factor
         """
         self.heightmap = heightmap
-        self.lowest = min(min(row) for row in self.heightmap)
-        self.highest = max(max(row) for row in self.heightmap)
-        if self.lowest < 0:
-            err_msg = "Heightmap values must be >= 0."
-            raise ValueError(err_msg)
-        self.value_range = self.highest - self.lowest
+        self.lowest = heightmap_lowest(self.heightmap)
+        self.highest = heightmap_highest(self.heightmap)
 
-        heightmap_size = self.heightmap_size
-        relief_height = relief_scale * self.value_range
+        the_heightmap_size = heightmap_size(self.heightmap)
+        relief_height = self.highest - self.lowest
 
         self.image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
             size=(
-                heightmap_size[0],
-                heightmap_size[1] + relief_height,
+                the_heightmap_size[0],
+                the_heightmap_size[1] + relief_height,
             ),
         )
         draw = ImageDraw.Draw(self.image)
 
-        for y in range(heightmap_size[0]):
-            for x in range(heightmap_size[1]):
+        for y in range(the_heightmap_size[0]):
+            for x in range(the_heightmap_size[1]):
                 draw.line(
                     (
                         (x, y + relief_height),
@@ -60,8 +61,8 @@ class ReliefRenderer:
                 )
 
         # draw extra 'front wall'
-        y = heightmap_size[0] - 1
-        for x in range(heightmap_size[1]):
+        y = the_heightmap_size[0] - 1
+        for x in range(the_heightmap_size[1]):
             # duplicate the last row in black,
             # 1 pixel lower, so it doesn't hide the real last row
             draw.line(
@@ -77,11 +78,6 @@ class ReliefRenderer:
             size=(scale * self.image.size[0], scale * self.image.size[1]),
             resample=Resampling.NEAREST,
         )
-
-    @property
-    def heightmap_size(self) -> tuple[int, int]:
-        """Get the size of the heightmap."""
-        return len(self.heightmap), len(self.heightmap[0])
 
     def pixel_shade(self, x: int, y: int) -> int:
         """Determine the pixel colour (shade in current implementation)."""
