@@ -26,6 +26,7 @@ class TiledReliefRenderer:
         self,
         heightmap: list[list[int]],
         scale: int = 1,
+        relief_scale: float = 1,
     ) -> None:
         """
         Parameters
@@ -66,6 +67,7 @@ class TiledReliefRenderer:
                     draw_context=draw_context,
                     color=self.tile_shade(x, y),
                     scale=scale,
+                    relief_scale=relief_scale,
                     x_offset=round(self.image.width / 2),
                     y_offset=relief_height * scale,
                 )

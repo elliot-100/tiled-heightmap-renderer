@@ -14,6 +14,7 @@ class TileRenderer:
         tile: Tile,
         draw_context: ImageDraw.ImageDraw,
         scale: int,
+        relief_scale: float,
         x_offset: int,
         y_offset: int,
         color: int,
@@ -25,6 +26,7 @@ class TileRenderer:
             Tile to render.
         draw_context: ImageDraw.ImageDraw
         scale: int
+        relief_scale: int
         x_offset: int
             Pixel offset.
         y_offset: int
@@ -33,15 +35,14 @@ class TileRenderer:
         """
         self.tile = tile
         self.draw_context = draw_context
-        self.scale = scale
         self.x_offset = x_offset
         self.y_offset = y_offset
         self.color = color
         self.points = [
             isometric_projection(
-                x=(self.tile.x + dx) * self.scale,
-                y=(self.tile.y + dy) * self.scale,
-                z=round(self.tile.heights[count] * self.scale),
+                x=(self.tile.x + dx) * scale,
+                y=(self.tile.y + dy) * scale,
+                z=round(self.tile.heights[count] * scale * relief_scale),
                 output_x_offset=self.x_offset,
                 output_y_offset=self.y_offset,
             )
