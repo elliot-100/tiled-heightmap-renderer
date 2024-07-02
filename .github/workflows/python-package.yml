@@ -44,4 +44,4 @@ jobs:
       - name: Check typing with mypy
         run: |
           source $VENV
-          mypy .
+          mypy . -v
