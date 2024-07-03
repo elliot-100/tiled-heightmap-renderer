@@ -24,3 +24,19 @@ class _Tile:
             self.heightmap[self.location.x + dx][self.location.y + dy]
             for (dx, dy) in _CORNER_OFFSETS
         ]
+
+    @property
+    def tri1(self) -> dict[tuple[int, int], int]:
+        return {
+            (0, 0): self.vertex_heights[0],
+            (0, 1): self.vertex_heights[1],
+            (1, 1): self.vertex_heights[2],
+        }
+
+    @property
+    def tri2(self) -> dict[tuple[int, int], int]:
+        return {
+            (0, 0): self.vertex_heights[0],
+            (1, 0): self.vertex_heights[3],
+            (1, 1): self.vertex_heights[2],
+        }
