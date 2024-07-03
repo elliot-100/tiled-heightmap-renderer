@@ -54,5 +54,4 @@ class TileRenderer:
         self.draw_context.polygon(
             xy=self.points,
             fill=self.color,
-            width=10,
         )
