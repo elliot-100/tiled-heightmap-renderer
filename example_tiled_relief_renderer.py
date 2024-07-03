@@ -7,7 +7,7 @@ my_render = TiledReliefRenderer(
     heightmap=EXAMPLE_HEIGHTMAP,
     scale=32,
     relief_scale=1,
-    shader="depth",
+    shader="height",
     debug_renderer=False,
 )
 my_render.show()
