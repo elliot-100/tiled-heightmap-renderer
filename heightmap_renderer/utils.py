@@ -29,7 +29,7 @@ def heightmap_highest(heightmap: list[list[int]]) -> int:
     return max(max(row) for row in heightmap)
 
 
-def normalise_8bit(value: float, lower_bound: int, upper_bound: int) -> int:
+def normalise_8bit(value: float, lower_bound: float, upper_bound: float) -> int:
     """Normalise value to the range 0 <= n <= 255."""
     return int(255 * (value - lower_bound) / upper_bound - lower_bound)
 
