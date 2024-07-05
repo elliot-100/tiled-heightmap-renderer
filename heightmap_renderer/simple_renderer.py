@@ -1,7 +1,6 @@
 """SimpleRenderer class module."""
 
 from PIL import Image
-from PIL.Image import Resampling
 
 from heightmap_renderer.utils import (
     heightmap_highest,
@@ -38,7 +37,7 @@ class SimpleRenderer:
 
         the_heightmap_size = heightmap_size(self.heightmap)
 
-        self._image: Image = Image.new(
+        self._image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
             size=the_heightmap_size,
         )
@@ -54,7 +53,7 @@ class SimpleRenderer:
         self._image.putdata(pixel_data)  # type: ignore[no-untyped-call]
         self._image = self._image.resize(
             size=(scale * the_heightmap_size[0], scale * the_heightmap_size[1]),
-            resample=Resampling.NEAREST,
+            resample=Image.Resampling.NEAREST,
         )
 
     def _pixel_shade(self, x: int, y: int) -> int:
