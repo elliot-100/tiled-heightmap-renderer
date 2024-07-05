@@ -46,7 +46,10 @@ class TiledReliefRenderer:
             Defaults to False.
         """
         self.heightmap = heightmap
+        self.scale = scale
+        self.relief_scale = relief_scale
         self.shader = shader
+        self.debug_renderer = debug_renderer
 
         self.lowest = heightmap_lowest(self.heightmap)
         self.highest = heightmap_highest(self.heightmap)
@@ -62,41 +65,41 @@ class TiledReliefRenderer:
                 self.heightmap_size[1] * scale,
             ),
         )
-        draw_context = ImageDraw.Draw(self.image)
+        self.draw_context = ImageDraw.Draw(self.image)
+        self.x_offset = round(self.image.width / 2)
+        self.y_offset = relief_height * scale
+        self._render()
 
+    def _render(self) -> None:
         for y in range(self.heightmap_size[0] - 1):
             for x in range(self.heightmap_size[1] - 1):
-                tile = Tile(
-                    x,
-                    y,
-                    heights=[
-                        self.heightmap[x + dx][y + dy] for (dx, dy) in CORNER_OFFSETS
-                    ],
-                )
+                heights = [
+                    self.heightmap[x + dx][y + dy] for (dx, dy) in CORNER_OFFSETS
+                ]
+                tile = Tile(x, y, heights)
                 tile_renderer = TileRenderer(
                     tile=tile,
-                    draw_context=draw_context,
-                    color=self.tile_shade(x, y),
-                    scale=scale,
-                    relief_scale=relief_scale,
-                    x_offset=round(self.image.width / 2),
-                    y_offset=relief_height * scale,
-                    debug_renderer=debug_renderer,
+                    draw_context=self.draw_context,
+                    color=self.tile_shade(tile),
+                    scale=self.scale,
+                    relief_scale=self.relief_scale,
+                    x_offset=self.x_offset,
+                    y_offset=self.y_offset,
+                    debug_renderer=self.debug_renderer,
                 )
                 tile_renderer.render()
 
-    def tile_shade(self, x: int, y: int) -> int:
+    def tile_shade(self, tile: Tile) -> int:
         """Determine the tile colour (shade in current implementation)."""
         if self.shader == "depth":
             max_depth = math.sqrt(
                 self.heightmap_size[0] ** 2 + self.heightmap_size[1] ** 2
             )
-            depth = math.sqrt(x**2 + y**2)
+            depth = math.sqrt(tile.x**2 + tile.y**2)
             return normalise_8bit(depth, 0, max_depth)
 
-        height = self.heightmap[x][y]
-        shade = float(height)
-        return normalise_8bit(shade, self.lowest, self.highest)
+        mean_height = sum(tile.heights) / 4
+        return normalise_8bit(mean_height, self.lowest, self.highest)
 
     def show(
         self,
