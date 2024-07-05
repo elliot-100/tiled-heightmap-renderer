@@ -3,7 +3,12 @@
 from PIL import ImageDraw
 
 from heightmap_renderer.tile import Tile
-from heightmap_renderer.utils import CORNER_OFFSETS, isometric_projection
+from heightmap_renderer.utils import (
+    CORNER_OFFSETS,
+    DEBUG_OUTLINE_SHADE,
+    DEBUG_OUTLINE_WIDTH,
+    isometric_projection,
+)
 
 
 class TileRenderer:
@@ -18,6 +23,8 @@ class TileRenderer:
         x_offset: int,
         y_offset: int,
         color: int,
+        *,
+        debug_renderer: bool,
     ) -> None:
         """
         Parameters
@@ -32,12 +39,17 @@ class TileRenderer:
         y_offset: int
             Pixel offset.
         color: int
+
+        debug_renderer : bool
+            If True, render 'debug' features, e.g. outlines.
+            Defaults to False.
         """
         self.tile = tile
         self.draw_context = draw_context
         self.x_offset = x_offset
         self.y_offset = y_offset
         self.color = color
+        self.debug_renderer = debug_renderer
         self.points = [
             isometric_projection(
                 x=(self.tile.x + dx) * scale,
@@ -51,8 +63,14 @@ class TileRenderer:
 
     def render(self) -> None:
         """Render the tile."""
+        outline = None
+        width = 0
+        if self.debug_renderer:
+            outline = DEBUG_OUTLINE_SHADE
+            width = DEBUG_OUTLINE_WIDTH
         self.draw_context.polygon(
             xy=self.points,
             fill=self.color,
-            width=10,
+            outline=outline,
+            width=width,
         )

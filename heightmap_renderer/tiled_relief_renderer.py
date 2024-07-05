@@ -27,6 +27,8 @@ class TiledReliefRenderer:
         heightmap: list[list[int]],
         scale: int = 1,
         relief_scale: float = 1,
+        *,
+        debug_renderer: bool = False,
     ) -> None:
         """
         Parameters
@@ -35,6 +37,10 @@ class TiledReliefRenderer:
             Values must be >= 0.
         scale
             Scale factor to apply to the [TO DO image].
+
+        debug_renderer : bool
+            If True, render 'debug' features, e.g. outlines.
+            Defaults to False.
         """
         self.heightmap = heightmap
         self.lowest = heightmap_lowest(self.heightmap)
@@ -70,6 +76,7 @@ class TiledReliefRenderer:
                     relief_scale=relief_scale,
                     x_offset=round(self.image.width / 2),
                     y_offset=relief_height * scale,
+                    debug_renderer=debug_renderer,
                 )
                 tile_renderer.render()
 
