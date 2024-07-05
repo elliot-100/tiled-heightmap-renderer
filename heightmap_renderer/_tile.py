@@ -1,7 +1,7 @@
 """Tile class module."""
 
 
-class Tile:
+class _Tile:
     """Represents an abstract tile."""
 
     def __init__(

@@ -13,6 +13,7 @@ pillow = "^10.3.0"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"
 ruff = "^0.5.0"
+pdoc = "^14.5.1"
 
 [tool.poetry.group.test.dependencies]
 mypy = "^1.10.0"
@@ -44,9 +45,10 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 # Ignore rules that aren't relevant in tests:
-#   S101 Use of assert detected
 #   PLR2004 Magic value used in comparison
-"**/{tests}/*" = ["S101", "PLR2004"]
+#   S101 Use of assert detected
+#   SLF001 Private member accessed
+"**/{tests}/*" = ["PLR2004", "S101", "SLF001"]
 
 # Don't check line-lengths in example heightmaps
 "heightmap_renderer/__init__.py" = ["E501"]

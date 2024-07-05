@@ -2,21 +2,21 @@
 
 from PIL import ImageDraw
 
-from heightmap_renderer.tile import Tile
+from heightmap_renderer._tile import _Tile
 from heightmap_renderer.utils import (
-    CORNER_OFFSETS,
+    _CORNER_OFFSETS,
     DEBUG_OUTLINE_SHADE,
     DEBUG_OUTLINE_WIDTH,
     isometric_projection,
 )
 
 
-class TileRenderer:
+class _TileRenderer:
     """Renders a single tile."""
 
     def __init__(
         self,
-        tile: Tile,
+        tile: _Tile,
         draw_context: ImageDraw.ImageDraw,
         scale: int,
         relief_scale: float,
@@ -29,7 +29,7 @@ class TileRenderer:
         """
         Parameters
         ----------
-        tile: Tile
+        tile: _Tile
             Tile to render.
         draw_context: ImageDraw.ImageDraw
         scale: int
@@ -58,7 +58,7 @@ class TileRenderer:
                 output_x_offset=self.x_offset,
                 output_y_offset=self.y_offset,
             )
-            for count, (dx, dy) in enumerate(CORNER_OFFSETS)
+            for count, (dx, dy) in enumerate(_CORNER_OFFSETS)
         ]
 
     def render(self) -> None:

@@ -31,17 +31,17 @@ class SimpleRenderer:
             Scale factor to apply to the image.
         """
         self.heightmap = heightmap
-        self.lowest = heightmap_lowest(self.heightmap)
-        self.highest = heightmap_highest(self.heightmap)
+        self._lowest = heightmap_lowest(self.heightmap)
+        self._highest = heightmap_highest(self.heightmap)
 
         the_heightmap_size = heightmap_size(self.heightmap)
 
-        self.image = Image.new(
+        self._image: Image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
             size=the_heightmap_size,
         )
         pixel_data: list[int] = [
-            self.pixel_shade(x, y)
+            self._pixel_shade(x, y)
             for x in range(
                 the_heightmap_size[0],
             )
@@ -49,20 +49,20 @@ class SimpleRenderer:
                 the_heightmap_size[1],
             )
         ]
-        self.image.putdata(pixel_data)  # type: ignore[no-untyped-call]
-        self.image = self.image.resize(
+        self._image.putdata(pixel_data)  # type: ignore[no-untyped-call]
+        self._image = self._image.resize(
             size=(scale * the_heightmap_size[0], scale * the_heightmap_size[1]),
             resample=Resampling.NEAREST,
         )
 
-    def pixel_shade(self, x: int, y: int) -> int:
+    def _pixel_shade(self, x: int, y: int) -> int:
         """Determine the pixel colour (shade in current implementation)."""
         height = self.heightmap[x][y]
         shade = float(height)
-        return normalise_8bit(shade, self.lowest, self.highest)
+        return normalise_8bit(shade, self._lowest, self._highest)
 
     def show(
         self,
     ) -> None:
         """Show the image."""
-        self.image.show()
+        self._image.show()

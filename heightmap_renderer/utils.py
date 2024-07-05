@@ -4,7 +4,7 @@ import math
 
 SQRT_2 = math.sqrt(2)
 
-CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
+_CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
 
 DEBUG_OUTLINE_SHADE = 255
 DEBUG_OUTLINE_WIDTH = 1
