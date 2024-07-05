@@ -1,5 +1,7 @@
 """TiledReliefRenderer class module."""
 
+import math
+
 from PIL import Image, ImageDraw
 
 from heightmap_renderer.tile import Tile
@@ -27,6 +29,7 @@ class TiledReliefRenderer:
         heightmap: list[list[int]],
         scale: int = 1,
         relief_scale: float = 1,
+        shader: str = "height",
         *,
         debug_renderer: bool = False,
     ) -> None:
@@ -43,24 +46,26 @@ class TiledReliefRenderer:
             Defaults to False.
         """
         self.heightmap = heightmap
+        self.shader = shader
+
         self.lowest = heightmap_lowest(self.heightmap)
         self.highest = heightmap_highest(self.heightmap)
 
-        the_heightmap_size = heightmap_size(self.heightmap)
+        self.heightmap_size = heightmap_size(self.heightmap)
         relief_height = self.highest - self.lowest
 
         self.image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
             size=(
-                round(the_heightmap_size[0] * SQRT_2)
+                round(self.heightmap_size[0] * SQRT_2)
                 * scale,  # could use projection here
-                the_heightmap_size[1] * scale,
+                self.heightmap_size[1] * scale,
             ),
         )
         draw_context = ImageDraw.Draw(self.image)
 
-        for y in range(the_heightmap_size[0] - 1):
-            for x in range(the_heightmap_size[1] - 1):
+        for y in range(self.heightmap_size[0] - 1):
+            for x in range(self.heightmap_size[1] - 1):
                 tile = Tile(
                     x,
                     y,
@@ -82,6 +87,13 @@ class TiledReliefRenderer:
 
     def tile_shade(self, x: int, y: int) -> int:
         """Determine the tile colour (shade in current implementation)."""
+        if self.shader == "depth":
+            max_depth = math.sqrt(
+                self.heightmap_size[0] ** 2 + self.heightmap_size[1] ** 2
+            )
+            depth = math.sqrt(x**2 + y**2)
+            return normalise_8bit(depth, 0, max_depth)
+
         height = self.heightmap[x][y]
         shade = float(height)
         return normalise_8bit(shade, self.lowest, self.highest)
