@@ -12,9 +12,9 @@ from heightmap_renderer.utils import (
 
 
 class SimpleRenderer:
-    """Render a heightmap as an 8-bit greyscale image.
+    """Render a heightmap as a 2D 8-bit greyscale image.
 
-    Heightmap input initially implemented as simple Python array (list of list).
+    Heights apply to pixel centres.
     """
 
     def __init__(
@@ -22,15 +22,17 @@ class SimpleRenderer:
         heightmap: list[list[int]],
         scale: int = 1,
     ) -> None:
-        """
+        """Create a new SimpleRenderer instance.
+
         Parameters
         ----------
         heightmap
-            Values must be >= 0.
+            Values must be >= 0
         scale
-            Scale factor to apply to the image.
+            Scale factor to apply
         """
         self.heightmap = heightmap
+        """Initially implemented as simple Python array (list of list)."""
         self._lowest = heightmap_lowest(self.heightmap)
         self._highest = heightmap_highest(self.heightmap)
 

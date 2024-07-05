@@ -26,24 +26,6 @@ class _TileRenderer:
         *,
         debug_renderer: bool,
     ) -> None:
-        """
-        Parameters
-        ----------
-        tile: _Tile
-            Tile to render.
-        draw_context: ImageDraw.ImageDraw
-        scale: int
-        relief_scale: int
-        x_offset: int
-            Pixel offset.
-        y_offset: int
-            Pixel offset.
-        color: int
-
-        debug_renderer : bool
-            If True, render 'debug' features, e.g. outlines.
-            Defaults to False.
-        """
         self.tile = tile
         self.draw_context = draw_context
         self.x_offset = x_offset

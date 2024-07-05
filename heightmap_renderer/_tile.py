@@ -2,7 +2,7 @@
 
 
 class _Tile:
-    """Represents an abstract tile."""
+    """Represents an abstract quad tile."""
 
     def __init__(
         self,
@@ -18,7 +18,7 @@ class _Tile:
         y: int
             Logical location on the heightmap.
         heights: list[int]
-            Height values.
+            Height values at the vertices.
         """
         self.x = x
         self.y = y

@@ -17,11 +17,9 @@ from heightmap_renderer.utils import (
 
 
 class TiledReliefRenderer:
-    """Render a heightmap ...TO DO... with relief.
+    """Render a heightmap as a '2.5D' 8-bit greyscale image.
 
-    Heightmap input initially implemented as simple Python array (list of list).
-
-    NB: heights apply to vertices.
+    Heights apply to vertices.
     """
 
     def __init__(
@@ -34,18 +32,25 @@ class TiledReliefRenderer:
         debug_renderer: bool = False,
     ) -> None:
         """
+        Create a new TiledReliefRenderer instance.
+
         Parameters
         ----------
         heightmap
-            Values must be >= 0.
+            Values must be >= 0
         scale
-            Scale factor to apply to the [TO DO image].
-
-        debug_renderer : bool
-            If True, render 'debug' features, e.g. outlines.
-            Defaults to False.
+            Scale factor to apply to all dimensions
+        relief_scale
+            Additional z/height scale factor
+        shader
+            "height" (default) or
+            "depth"
+        debug_renderer
+            True: draw extra features for debugging.
+            Defaults to False
         """
         self.heightmap = heightmap
+        """Initially implemented as simple Python array (list of list)."""
         self.scale = scale
         self.relief_scale = relief_scale
         self.shader = shader
