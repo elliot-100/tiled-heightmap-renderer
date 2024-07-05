@@ -6,6 +6,9 @@ SQRT_2 = math.sqrt(2)
 
 CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
 
+DEBUG_OUTLINE_SHADE = 255
+DEBUG_OUTLINE_WIDTH = 1
+
 
 def heightmap_size(heightmap: list[list[int]]) -> tuple[int, int]:
     """Get the size of the heightmap."""
