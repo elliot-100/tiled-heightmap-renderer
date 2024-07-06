@@ -16,7 +16,7 @@ class _TileRenderer:
 
     def __init__(
         self,
-        tile: _Tile,
+        tile: None | _Tile,
         draw_context: ImageDraw.ImageDraw,
         scale: int,
         relief_scale: float,
@@ -28,30 +28,34 @@ class _TileRenderer:
     ) -> None:
         self.tile = tile
         self.draw_context = draw_context
+        self.scale = scale
+        self.relief_scale = relief_scale
         self.x_offset = x_offset
         self.y_offset = y_offset
         self.color = color
         self.debug_renderer = debug_renderer
-        self.points = [
+
+    def render(self) -> None:
+        """Render the tile."""
+        if not self.tile:
+            raise TypeError  # type guard for mypy
+
+        outline = DEBUG_OUTLINE_SHADE if self.debug_renderer else None
+        width = DEBUG_OUTLINE_WIDTH if self.debug_renderer else 0
+
+        draw_points = [
             isometric_projection(
-                x=(self.tile.x + dx) * scale,
-                y=(self.tile.y + dy) * scale,
-                z=round(self.tile.heights[count] * scale * relief_scale),
+                x=(self.tile.x + dx) * self.scale,
+                y=(self.tile.y + dy) * self.scale,
+                z=round(self.tile.heights[count] * self.scale * self.relief_scale),
                 output_x_offset=self.x_offset,
                 output_y_offset=self.y_offset,
             )
             for count, (dx, dy) in enumerate(_CORNER_OFFSETS)
         ]
 
-    def render(self) -> None:
-        """Render the tile."""
-        outline = None
-        width = 0
-        if self.debug_renderer:
-            outline = DEBUG_OUTLINE_SHADE
-            width = DEBUG_OUTLINE_WIDTH
         self.draw_context.polygon(
-            xy=self.points,
+            xy=draw_points,
             fill=self.color,
             outline=outline,
             width=width,

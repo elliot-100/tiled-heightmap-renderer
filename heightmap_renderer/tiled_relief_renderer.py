@@ -76,23 +76,31 @@ class TiledReliefRenderer:
         self._render()
 
     def _render(self) -> None:
+        """Render the image."""
+        tile_renderer = _TileRenderer(
+            tile=None,
+            draw_context=self._draw_context,
+            color=0,
+            scale=self.scale,
+            relief_scale=self.relief_scale,
+            x_offset=self._x_offset,
+            y_offset=self._y_offset,
+            debug_renderer=self.debug_renderer,
+        )
         for y in range(self._heightmap_size[0] - 1):
             for x in range(self._heightmap_size[1] - 1):
-                heights = [
-                    self.heightmap[x + dx][y + dy] for (dx, dy) in _CORNER_OFFSETS
-                ]
-                tile = _Tile(x, y, heights)
-                tile_renderer = _TileRenderer(
-                    tile=tile,
-                    draw_context=self._draw_context,
-                    color=self._tile_shade(tile),
-                    scale=self.scale,
-                    relief_scale=self.relief_scale,
-                    x_offset=self._x_offset,
-                    y_offset=self._y_offset,
-                    debug_renderer=self.debug_renderer,
-                )
-                tile_renderer.render()
+                self._render_tile(tile_renderer, x, y)
+
+    def _render_tile(self, tile_renderer: _TileRenderer, x: int, y: int) -> None:
+        vertex_heights = self._vertex_heights(x, y)
+        tile = _Tile(x, y, vertex_heights)
+        tile_renderer.tile = tile
+        tile_renderer.color = self._tile_shade(tile)
+        tile_renderer.render()
+
+    def _vertex_heights(self, x: int, y: int) -> list[int]:
+        """Return the heights at tile vertices."""
+        return [self.heightmap[x + dx][y + dy] for (dx, dy) in _CORNER_OFFSETS]
 
     def _tile_shade(self, tile: _Tile) -> int:
         """Determine the tile colour (shade in current implementation)."""
