@@ -4,19 +4,19 @@ import math
 
 SQRT_2 = math.sqrt(2)
 
-CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
+_CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
 
 DEBUG_OUTLINE_SHADE = 255
 DEBUG_OUTLINE_WIDTH = 1
 
 
 def heightmap_size(heightmap: list[list[int]]) -> tuple[int, int]:
-    """Get the size of the heightmap."""
+    """Return the size of the heightmap."""
     return len(heightmap), len(heightmap[0])
 
 
 def heightmap_lowest(heightmap: list[list[int]]) -> int:
-    """Find the lowest value in a heightmap."""
+    """Return the lowest value in the heightmap."""
     lowest = min(min(row) for row in heightmap)
     if lowest < 0:
         err_msg = "Heightmap values must be >= 0."
@@ -25,13 +25,19 @@ def heightmap_lowest(heightmap: list[list[int]]) -> int:
 
 
 def heightmap_highest(heightmap: list[list[int]]) -> int:
-    """Find the highest value in a heightmap."""
+    """Return the highest value in the heightmap."""
     return max(max(row) for row in heightmap)
 
 
-def normalise_8bit(value: float, lower_bound: float, upper_bound: float) -> int:
-    """Normalise value to the range 0 <= n <= 255."""
-    return int(255 * (value - lower_bound) / upper_bound - lower_bound)
+def normalise_8bit(
+    value: float,
+    values_lower_bound: float,
+    values_upper_bound: float,
+) -> int:
+    """Return value normalised to the range `0 <= n <= 255`."""
+    return int(
+        255 * (value - values_lower_bound) / values_upper_bound - values_lower_bound
+    )
 
 
 def isometric_projection(
@@ -41,18 +47,18 @@ def isometric_projection(
     output_x_offset: int = 0,  # not sure if this belongs here
     output_y_offset: int = 0,
 ) -> tuple[float, float]:
-    """Project heightmap coordinate to window (x, y) pixel coordinate.
+    """Project `(x, y, z)` coordinate to `(x, y)` coordinate.
 
-    [Uses 'video game isometric' projection, i.e. dimetric projection with a 2:1
-    pixel ratio]
+    NB: Uses 'video game isometric' projection, i.e. dimetric projection with a 2:1
+    pixel ratio.
 
     Parameters
     ----------
-    x: int
-    y: int
-    z: int, optional
-    output_x_offset: int, optional
-    output_y_offset: int, optional
+    x
+    y
+    z : optional
+    output_x_offset : optional
+    output_y_offset : optional
 
     Returns
     -------

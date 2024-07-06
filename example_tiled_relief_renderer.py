@@ -6,7 +6,7 @@ from heightmap_renderer.tiled_relief_renderer import TiledReliefRenderer
 my_render = TiledReliefRenderer(
     heightmap=EXAMPLE_HEIGHTMAP,
     scale=32,
-    relief_scale=1,
+    relief_scale=0.5,
     shader="height",
     debug_renderer=False,
 )

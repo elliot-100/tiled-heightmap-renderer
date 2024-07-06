@@ -11,7 +11,7 @@ def test_heightmap_size(sample_heightmap_16: list[list[int]]) -> None:
         heightmap=sample_heightmap_16,
     )
     # assert
-    assert my_render.image.size == (16, 16)
+    assert my_render._image.size == (16, 16)
 
 
 def test_normalise() -> None:
@@ -24,6 +24,6 @@ def test_normalise() -> None:
     my_render = SimpleRenderer(
         heightmap=my_heightmap,
     )
-    pixels = list(my_render.image.getdata())
+    pixels = list(my_render._image.getdata())
     # assert
     assert pixels == [0, 127, 127, 255]
