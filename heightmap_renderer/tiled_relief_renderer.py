@@ -1,7 +1,5 @@
 """TiledReliefRenderer class module."""
 
-import math
-
 from PIL import Image, ImageDraw
 
 from heightmap_renderer._tile import _Tile
@@ -11,7 +9,6 @@ from heightmap_renderer.utils import (
     heightmap_highest,
     heightmap_lowest,
     heightmap_size,
-    normalise_8bit,
 )
 
 
@@ -77,7 +74,6 @@ class TiledReliefRenderer:
     def _render(self) -> None:
         """Render the image."""
         tile_renderer = _TileRenderer(
-            tile=None,
             draw_context=self._draw_context,
             scale=self.scale,
             relief_scale=self.relief_scale,
@@ -93,20 +89,7 @@ class TiledReliefRenderer:
     def _render_tile(self, tile_renderer: _TileRenderer, x: int, y: int) -> None:
         tile = _Tile(self.heightmap, x, y)
         tile_renderer.tile = tile
-        tile_renderer.color = self._tile_shade(tile)
         tile_renderer.render()
-
-    def _tile_shade(self, tile: _Tile) -> int:
-        """Determine the tile colour (shade in current implementation)."""
-        if self.shader == "depth":
-            max_depth = math.sqrt(
-                self._heightmap_size[0] ** 2 + self._heightmap_size[1] ** 2
-            )
-            depth = math.sqrt(tile.x**2 + tile.y**2)
-            return normalise_8bit(depth, 0, max_depth)
-
-        mean_height = sum(tile.vertex_heights) / 4
-        return normalise_8bit(mean_height, self._lowest, self._highest)
 
     def show(
         self,
