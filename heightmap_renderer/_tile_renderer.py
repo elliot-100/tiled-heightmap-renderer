@@ -50,7 +50,9 @@ class _TileRenderer:
             isometric_projection(
                 x=(self.tile.x + dx) * self.scale,
                 y=(self.tile.y + dy) * self.scale,
-                z=round(self.tile.heights[count] * self.scale * self.relief_scale),
+                z=round(
+                    self.tile.vertex_heights[count] * self.scale * self.relief_scale
+                ),
                 output_x_offset=self.x_offset,
                 output_y_offset=self.y_offset,
             )
