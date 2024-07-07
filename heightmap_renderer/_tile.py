@@ -26,6 +26,13 @@ class _Tile:
         ]
 
     @property
+    def in_shadow(self) -> bool:
+        input_offsets = [(-1, 1), (-1, 0), (0, 1)]
+        x, y = self.location.x, self.location.y
+        input_heights = [self.heightmap[x + dx][y + dy] for dx, dy in input_offsets]
+        return any(h > self.heightmap[x][y] for h in input_heights)
+
+    @property
     def tri1(self) -> dict[tuple[int, int], int]:
         return {
             (0, 0): self.vertex_heights[0],

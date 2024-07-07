@@ -86,7 +86,10 @@ class _TileRenderer:
             the_heightmap_size = heightmap_size(self.tile.heightmap)
             max_depth = math.sqrt(the_heightmap_size.x**2 + the_heightmap_size.y**2)
             depth = math.sqrt(self.tile.location.x**2 + self.tile.location.y**2)
-            return normalise_8bit(depth, 0, max_depth)
+            shade = normalise_8bit(depth, 0, max_depth)
+            if self.tile.in_shadow:
+                shade *= 0.75
+            return round(shade)
 
         return normalise_8bit(
             sum(tri_heights) / 3,
