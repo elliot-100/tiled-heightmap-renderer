@@ -7,7 +7,6 @@ from PIL import Image, ImageDraw
 from heightmap_renderer._tile import _Tile
 from heightmap_renderer._tile_renderer import _TileRenderer
 from heightmap_renderer.utils import (
-    _CORNER_OFFSETS,
     SQRT_2,
     heightmap_highest,
     heightmap_lowest,
@@ -84,7 +83,7 @@ class TiledReliefRenderer:
             relief_scale=self.relief_scale,
             x_offset=self._x_offset,
             y_offset=self._y_offset,
-            shader="depth",
+            shader=self.shader,
             debug_renderer=self.debug_renderer,
         )
         for y in range(self._heightmap_size[0] - 1):
@@ -92,15 +91,10 @@ class TiledReliefRenderer:
                 self._render_tile(tile_renderer, x, y)
 
     def _render_tile(self, tile_renderer: _TileRenderer, x: int, y: int) -> None:
-        vertex_heights = self._vertex_heights(x, y)
-        tile = _Tile(x, y, vertex_heights)
+        tile = _Tile(self.heightmap, x, y)
         tile_renderer.tile = tile
         tile_renderer.color = self._tile_shade(tile)
         tile_renderer.render()
-
-    def _vertex_heights(self, x: int, y: int) -> list[int]:
-        """Return the heights at tile vertices."""
-        return [self.heightmap[x + dx][y + dy] for (dx, dy) in _CORNER_OFFSETS]
 
     def _tile_shade(self, tile: _Tile) -> int:
         """Determine the tile colour (shade in current implementation)."""
@@ -111,7 +105,7 @@ class TiledReliefRenderer:
             depth = math.sqrt(tile.x**2 + tile.y**2)
             return normalise_8bit(depth, 0, max_depth)
 
-        mean_height = sum(tile.heights) / 4
+        mean_height = sum(tile.vertex_heights) / 4
         return normalise_8bit(mean_height, self._lowest, self._highest)
 
     def show(
