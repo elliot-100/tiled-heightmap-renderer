@@ -22,7 +22,7 @@ class _TileRenderer:
         relief_scale: float,
         x_offset: int,
         y_offset: int,
-        color: int,
+        shader: str = "height",
         *,
         debug_renderer: bool,
     ) -> None:
@@ -32,7 +32,8 @@ class _TileRenderer:
         self.relief_scale = relief_scale
         self.x_offset = x_offset
         self.y_offset = y_offset
-        self.color = color
+        self.color = 0
+        self.shader = shader
         self.debug_renderer = debug_renderer
 
     def render(self) -> None:

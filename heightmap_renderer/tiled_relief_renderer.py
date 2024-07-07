@@ -80,11 +80,11 @@ class TiledReliefRenderer:
         tile_renderer = _TileRenderer(
             tile=None,
             draw_context=self._draw_context,
-            color=0,
             scale=self.scale,
             relief_scale=self.relief_scale,
             x_offset=self._x_offset,
             y_offset=self._y_offset,
+            shader="depth",
             debug_renderer=self.debug_renderer,
         )
         for y in range(self._heightmap_size[0] - 1):
