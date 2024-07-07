@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from PIL import ImageDraw
 
+from heightmap_renderer._coordinate_int_2d import _CoordinateInt2D
 from heightmap_renderer.utils import (
     _CORNER_OFFSETS,
     DEBUG_OUTLINE_SHADE,
@@ -28,8 +29,7 @@ class _TileRenderer:
         draw_context: ImageDraw.ImageDraw,
         scale: int,
         relief_scale: float,
-        x_offset: int,
-        y_offset: int,
+        offset: _CoordinateInt2D,
         shader: str = "height",
         *,
         debug_renderer: bool,
@@ -37,8 +37,7 @@ class _TileRenderer:
         self.draw_context = draw_context
         self.scale = scale
         self.relief_scale = relief_scale
-        self.x_offset = x_offset
-        self.y_offset = y_offset
+        self.offset = offset
         self.color = 0
         self.shader = shader
         self.debug_renderer = debug_renderer
@@ -55,13 +54,12 @@ class _TileRenderer:
 
         draw_points = [
             isometric_projection(
-                x=(self.tile.x + dx) * self.scale,
-                y=(self.tile.y + dy) * self.scale,
+                x=(self.tile.location.x + dx) * self.scale,
+                y=(self.tile.location.y + dy) * self.scale,
                 z=round(
                     self.tile.vertex_heights[count] * self.scale * self.relief_scale
                 ),
-                output_x_offset=self.x_offset,
-                output_y_offset=self.y_offset,
+                output_offset=self.offset,
             )
             for count, (dx, dy) in enumerate(_CORNER_OFFSETS)
         ]
@@ -80,10 +78,8 @@ class _TileRenderer:
 
         if self.shader == "depth":
             the_heightmap_size = heightmap_size(self.tile.heightmap)
-            max_depth = math.sqrt(
-                the_heightmap_size[0] ** 2 + the_heightmap_size[1] ** 2
-            )
-            depth = math.sqrt(self.tile.x**2 + self.tile.y**2)
+            max_depth = math.sqrt(the_heightmap_size.x**2 + the_heightmap_size.y**2)
+            depth = math.sqrt(self.tile.location.x**2 + self.tile.location.y**2)
             return normalise_8bit(depth, 0, max_depth)
 
         mean_height = sum(self.tile.vertex_heights) / 4

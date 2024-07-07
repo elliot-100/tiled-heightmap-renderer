@@ -2,6 +2,8 @@
 
 import math
 
+from heightmap_renderer._coordinate_int_2d import ZERO_COORDINATE_2D, _CoordinateInt2D
+
 SQRT_2 = math.sqrt(2)
 
 _CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
@@ -10,9 +12,9 @@ DEBUG_OUTLINE_SHADE = 255
 DEBUG_OUTLINE_WIDTH = 1
 
 
-def heightmap_size(heightmap: list[list[int]]) -> tuple[int, int]:
+def heightmap_size(heightmap: list[list[int]]) -> _CoordinateInt2D:
     """Return the size of the heightmap."""
-    return len(heightmap), len(heightmap[0])
+    return _CoordinateInt2D(len(heightmap), len(heightmap[0]))
 
 
 def heightmap_lowest(heightmap: list[list[int]]) -> int:
@@ -44,8 +46,7 @@ def isometric_projection(
     x: int,
     y: int,
     z: int = 0,
-    output_x_offset: int = 0,  # not sure if this belongs here
-    output_y_offset: int = 0,
+    output_offset: _CoordinateInt2D = ZERO_COORDINATE_2D,
 ) -> tuple[float, float]:
     """Project `(x, y, z)` coordinate to `(x, y)` coordinate.
 
@@ -57,13 +58,12 @@ def isometric_projection(
     x
     y
     z : optional
-    output_x_offset : optional
-    output_y_offset : optional
+    output_offset : optional
 
     Returns
     -------
     tuple[float, float]
     """
-    output_x = (x - y) / SQRT_2 + output_x_offset
-    output_y = (x + y) / SQRT_2 / 2 - z + output_y_offset
+    output_x = (x - y) / SQRT_2 + output_offset.x
+    output_y = (x + y) / SQRT_2 / 2 - z + output_offset.y
     return output_x, output_y

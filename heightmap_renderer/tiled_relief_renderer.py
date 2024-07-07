@@ -2,6 +2,7 @@
 
 from PIL import Image, ImageDraw
 
+from heightmap_renderer._coordinate_int_2d import _CoordinateInt2D
 from heightmap_renderer._tile import _Tile
 from heightmap_renderer._tile_renderer import _TileRenderer
 from heightmap_renderer.utils import (
@@ -61,14 +62,15 @@ class TiledReliefRenderer:
         self._image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
             size=(
-                round(self._heightmap_size[0] * SQRT_2)
+                round(self._heightmap_size.x * SQRT_2)
                 * scale,  # could use projection here
-                self._heightmap_size[1] * scale,
+                self._heightmap_size.y * scale,
             ),
         )
         self._draw_context = ImageDraw.Draw(self._image)
-        self._x_offset = round(self._image.width / 2)
-        self._y_offset = relief_height * scale
+        self.offset = _CoordinateInt2D(
+            round(self._image.width / 2), relief_height * scale
+        )
         self._render()
 
     def _render(self) -> None:
@@ -77,17 +79,18 @@ class TiledReliefRenderer:
             draw_context=self._draw_context,
             scale=self.scale,
             relief_scale=self.relief_scale,
-            x_offset=self._x_offset,
-            y_offset=self._y_offset,
+            offset=self.offset,
             shader=self.shader,
             debug_renderer=self.debug_renderer,
         )
-        for y in range(self._heightmap_size[0] - 1):
-            for x in range(self._heightmap_size[1] - 1):
-                self._render_tile(tile_renderer, x, y)
+        for y in range(self._heightmap_size.x - 1):
+            for x in range(self._heightmap_size.y - 1):
+                self._render_tile(tile_renderer, _CoordinateInt2D(x, y))
 
-    def _render_tile(self, tile_renderer: _TileRenderer, x: int, y: int) -> None:
-        tile = _Tile(self.heightmap, x, y)
+    def _render_tile(
+        self, tile_renderer: _TileRenderer, location: _CoordinateInt2D
+    ) -> None:
+        tile = _Tile(self.heightmap, location)
         tile_renderer.tile = tile
         tile_renderer.render()
 

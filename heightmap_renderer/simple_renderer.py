@@ -39,20 +39,16 @@ class SimpleRenderer:
 
         self._image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
-            size=the_heightmap_size,
+            size=(the_heightmap_size.x, the_heightmap_size.y),
         )
         pixel_data: list[int] = [
             self._pixel_shade(x, y)
-            for x in range(
-                the_heightmap_size[0],
-            )
-            for y in range(
-                the_heightmap_size[1],
-            )
+            for x in range(the_heightmap_size.x)
+            for y in range(the_heightmap_size.y)
         ]
         self._image.putdata(pixel_data)
         self._image = self._image.resize(
-            size=(scale * the_heightmap_size[0], scale * the_heightmap_size[1]),
+            size=(scale * the_heightmap_size.x, scale * the_heightmap_size.y),
             resample=Image.Resampling.NEAREST,
         )
 
