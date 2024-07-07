@@ -50,7 +50,7 @@ class SimpleRenderer:
                 the_heightmap_size[1],
             )
         ]
-        self._image.putdata(pixel_data)  # type: ignore[no-untyped-call]
+        self._image.putdata(pixel_data)
         self._image = self._image.resize(
             size=(scale * the_heightmap_size[0], scale * the_heightmap_size[1]),
             resample=Image.Resampling.NEAREST,
