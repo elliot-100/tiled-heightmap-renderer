@@ -1,18 +1,15 @@
 """TiledReliefRenderer class module."""
 
-import math
-
 from PIL import Image, ImageDraw
 
+from heightmap_renderer import _SQRT_2
+from heightmap_renderer._coordinate_int_2d import _CoordinateInt2D
 from heightmap_renderer._tile import _Tile
 from heightmap_renderer._tile_renderer import _TileRenderer
 from heightmap_renderer.utils import (
-    _CORNER_OFFSETS,
-    SQRT_2,
     heightmap_highest,
     heightmap_lowest,
     heightmap_size,
-    normalise_8bit,
 )
 
 
@@ -65,54 +62,37 @@ class TiledReliefRenderer:
         self._image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
             size=(
-                round(self._heightmap_size[0] * SQRT_2)
+                round(self._heightmap_size.x * _SQRT_2)
                 * scale,  # could use projection here
-                self._heightmap_size[1] * scale,
+                self._heightmap_size.y * scale,
             ),
         )
         self._draw_context = ImageDraw.Draw(self._image)
-        self._x_offset = round(self._image.width / 2)
-        self._y_offset = relief_height * scale
+        self.offset = _CoordinateInt2D(
+            round(self._image.width / 2), relief_height * scale
+        )
         self._render()
 
     def _render(self) -> None:
         """Render the image."""
         tile_renderer = _TileRenderer(
-            tile=None,
             draw_context=self._draw_context,
             scale=self.scale,
             relief_scale=self.relief_scale,
-            x_offset=self._x_offset,
-            y_offset=self._y_offset,
-            shader="depth",
+            offset=self.offset,
+            shader=self.shader,
             debug_renderer=self.debug_renderer,
         )
-        for y in range(self._heightmap_size[0] - 1):
-            for x in range(self._heightmap_size[1] - 1):
-                self._render_tile(tile_renderer, x, y)
+        for y in range(self._heightmap_size.x - 1):
+            for x in range(self._heightmap_size.y - 1):
+                self._render_tile(tile_renderer, _CoordinateInt2D(x, y))
 
-    def _render_tile(self, tile_renderer: _TileRenderer, x: int, y: int) -> None:
-        vertex_heights = self._vertex_heights(x, y)
-        tile = _Tile(x, y, vertex_heights)
+    def _render_tile(
+        self, tile_renderer: _TileRenderer, location: _CoordinateInt2D
+    ) -> None:
+        tile = _Tile(self.heightmap, location)
         tile_renderer.tile = tile
-        tile_renderer.color = self._tile_shade(tile)
         tile_renderer.render()
-
-    def _vertex_heights(self, x: int, y: int) -> list[int]:
-        """Return the heights at tile vertices."""
-        return [self.heightmap[x + dx][y + dy] for (dx, dy) in _CORNER_OFFSETS]
-
-    def _tile_shade(self, tile: _Tile) -> int:
-        """Determine the tile colour (shade in current implementation)."""
-        if self.shader == "depth":
-            max_depth = math.sqrt(
-                self._heightmap_size[0] ** 2 + self._heightmap_size[1] ** 2
-            )
-            depth = math.sqrt(tile.x**2 + tile.y**2)
-            return normalise_8bit(depth, 0, max_depth)
-
-        mean_height = sum(tile.heights) / 4
-        return normalise_8bit(mean_height, self._lowest, self._highest)
 
     def show(
         self,

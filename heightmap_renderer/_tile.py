@@ -1,25 +1,26 @@
 """Tile class module."""
 
+from heightmap_renderer import _CORNER_OFFSETS
+from heightmap_renderer._coordinate_int_2d import _CoordinateInt2D
+
 
 class _Tile:
-    """Represents an abstract quad tile."""
+    """Represents a quad tile on the heightmap."""
 
-    def __init__(
-        self,
-        x: int,
-        y: int,
-        heights: list[int],
-    ) -> None:
+    def __init__(self, heightmap: list[list[int]], location: _CoordinateInt2D) -> None:
         """
         Parameters
         ----------
-        x: int
+        heightmap
+        location
             Logical location on the heightmap.
-        y: int
-            Logical location on the heightmap.
-        heights: list[int]
-            Height values at the vertices.
         """
-        self.x = x
-        self.y = y
-        self.heights = heights
+        self.location = location
+        self.heightmap = heightmap
+
+    @property
+    def vertex_heights(self) -> list[int]:
+        return [
+            self.heightmap[self.location.x + dx][self.location.y + dy]
+            for (dx, dy) in _CORNER_OFFSETS
+        ]
