@@ -57,7 +57,6 @@ class TiledReliefRenderer:
         self._highest = heightmap_highest(self.heightmap)
 
         self._heightmap_size = heightmap_size(self.heightmap)
-        relief_height = self._highest - self._lowest
 
         self._image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
@@ -69,7 +68,7 @@ class TiledReliefRenderer:
         )
         self._draw_context = ImageDraw.Draw(self._image)
         self.offset = _CoordinateInt2D(
-            round(self._image.width / 2), relief_height * scale
+            round(self._image.width / 2), (self._highest - self._lowest) * scale
         )
         self._render()
 

@@ -40,7 +40,6 @@ class _TileRenderer:
         self.scale = scale
         self.relief_scale = relief_scale
         self.offset = offset
-        self.color = 0
         self.shader = shader
         self.debug_renderer = debug_renderer
 
