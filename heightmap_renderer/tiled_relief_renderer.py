@@ -82,8 +82,8 @@ class TiledReliefRenderer:
             shader=self.shader,
             debug_renderer=self.debug_renderer,
         )
-        for y in range(self._heightmap_size.x - 1):
-            for x in range(self._heightmap_size.y - 1):
+        for y in range(self._heightmap_size.y - 1):
+            for x in range(self._heightmap_size.x - 1):
                 self._render_tile(tile_renderer, _CoordinateInt2D(x, y))
 
     def _render_tile(
