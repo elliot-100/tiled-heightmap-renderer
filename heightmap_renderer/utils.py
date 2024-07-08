@@ -35,20 +35,18 @@ def normalise_8bit(
 
 
 def isometric_projection(
-    x: int,
-    y: int,
+    xy: _CoordinateInt2D,
     z: int = 0,
     output_offset: _CoordinateInt2D = ZERO_COORDINATE_2D,
 ) -> tuple[float, float]:
-    """Project `(x, y, z)` coordinate to `(x, y)` coordinate.
+    """Project `(x, y)` or `(x, y, z)` coordinate to `(x, y)` coordinate.
 
     NB: Uses 'video game isometric' projection, i.e. dimetric projection with a 2:1
     pixel ratio.
 
     Parameters
     ----------
-    x
-    y
+    xy
     z : optional
     output_offset : optional
 
@@ -56,6 +54,7 @@ def isometric_projection(
     -------
     tuple[float, float]
     """
+    x, y = xy.x, xy.y
     output_x = (x - y) / _SQRT_2 + output_offset.x
     output_y = (x + y) / _SQRT_2 / 2 - z + output_offset.y
     return output_x, output_y

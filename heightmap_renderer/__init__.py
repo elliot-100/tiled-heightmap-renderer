@@ -2,8 +2,10 @@
 
 import math
 
+from heightmap_renderer._coordinate_int_2d import _CoordinateInt2D
+
 _SQRT_2 = math.sqrt(2)
-_CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
+_CORNER_OFFSETS = [_CoordinateInt2D(x, y) for x, y in [(0, 0), (0, 1), (1, 1), (1, 0)]]
 _DEBUG_OUTLINE_SHADE = 255
 _DEBUG_OUTLINE_WIDTH = 1
 
