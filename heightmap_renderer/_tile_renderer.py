@@ -2,11 +2,13 @@
 
 from PIL import ImageDraw
 
+from heightmap_renderer import (
+    _CORNER_OFFSETS,
+    _DEBUG_OUTLINE_SHADE,
+    _DEBUG_OUTLINE_WIDTH,
+)
 from heightmap_renderer._tile import _Tile
 from heightmap_renderer.utils import (
-    _CORNER_OFFSETS,
-    DEBUG_OUTLINE_SHADE,
-    DEBUG_OUTLINE_WIDTH,
     isometric_projection,
 )
 
@@ -41,8 +43,8 @@ class _TileRenderer:
         if not self.tile:
             raise TypeError  # type guard for mypy
 
-        outline = DEBUG_OUTLINE_SHADE if self.debug_renderer else None
-        width = DEBUG_OUTLINE_WIDTH if self.debug_renderer else 0
+        outline = _DEBUG_OUTLINE_SHADE if self.debug_renderer else None
+        width = _DEBUG_OUTLINE_WIDTH if self.debug_renderer else 0
 
         draw_points = [
             isometric_projection(

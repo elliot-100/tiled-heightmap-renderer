@@ -1,13 +1,6 @@
 """Utility functions."""
 
-import math
-
-SQRT_2 = math.sqrt(2)
-
-_CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
-
-DEBUG_OUTLINE_SHADE = 255
-DEBUG_OUTLINE_WIDTH = 1
+from heightmap_renderer import _SQRT_2
 
 
 def heightmap_size(heightmap: list[list[int]]) -> tuple[int, int]:
@@ -64,6 +57,6 @@ def isometric_projection(
     -------
     tuple[float, float]
     """
-    output_x = (x - y) / SQRT_2 + output_x_offset
-    output_y = (x + y) / SQRT_2 / 2 - z + output_y_offset
+    output_x = (x - y) / _SQRT_2 + output_x_offset
+    output_y = (x + y) / _SQRT_2 / 2 - z + output_y_offset
     return output_x, output_y

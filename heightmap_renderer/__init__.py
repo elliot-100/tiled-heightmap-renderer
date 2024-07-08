@@ -1,5 +1,12 @@
 """Main package."""
 
+import math
+
+_SQRT_2 = math.sqrt(2)
+_CORNER_OFFSETS = [(0, 0), (0, 1), (1, 1), (1, 0)]
+_DEBUG_OUTLINE_SHADE = 255
+_DEBUG_OUTLINE_WIDTH = 1
+
 # fmt: off
 
 EXAMPLE_HEIGHTMAP_16 = [

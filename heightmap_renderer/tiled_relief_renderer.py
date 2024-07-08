@@ -4,11 +4,10 @@ import math
 
 from PIL import Image, ImageDraw
 
+from heightmap_renderer import _CORNER_OFFSETS, _SQRT_2
 from heightmap_renderer._tile import _Tile
 from heightmap_renderer._tile_renderer import _TileRenderer
 from heightmap_renderer.utils import (
-    _CORNER_OFFSETS,
-    SQRT_2,
     heightmap_highest,
     heightmap_lowest,
     heightmap_size,
@@ -65,7 +64,7 @@ class TiledReliefRenderer:
         self._image = Image.new(
             mode="L",  # 8-bit pixels, grayscale
             size=(
-                round(self._heightmap_size[0] * SQRT_2)
+                round(self._heightmap_size[0] * _SQRT_2)
                 * scale,  # could use projection here
                 self._heightmap_size[1] * scale,
             ),
