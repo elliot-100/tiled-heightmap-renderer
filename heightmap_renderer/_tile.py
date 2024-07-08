@@ -1,13 +1,13 @@
 """Tile class module."""
 
-from heightmap_renderer import _CORNER_OFFSETS
+from heightmap_renderer import _CORNER_OFFSETS, NDArrayInt
 from heightmap_renderer._coordinate_int_2d import _CoordinateInt2D
 
 
 class _Tile:
     """Represents a quad tile on the heightmap."""
 
-    def __init__(self, heightmap, location: _CoordinateInt2D) -> None:  # noqa: ANN001
+    def __init__(self, heightmap: NDArrayInt, location: _CoordinateInt2D) -> None:
         """
         Parameters
         ----------
