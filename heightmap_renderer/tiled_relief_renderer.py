@@ -1,5 +1,6 @@
 """TiledReliefRenderer class module."""
 
+import numpy as np
 from PIL import Image, ImageDraw
 
 from heightmap_renderer import _SQRT_2
@@ -46,8 +47,7 @@ class TiledReliefRenderer:
             True: draw extra features for debugging.
             Defaults to False
         """
-        self.heightmap = heightmap
-        """Initially implemented as simple Python array (list of list)."""
+        self.heightmap = np.array(heightmap)
         self.scale = scale
         self.relief_scale = relief_scale
         self.shader = shader

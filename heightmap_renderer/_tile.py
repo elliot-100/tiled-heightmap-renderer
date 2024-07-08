@@ -7,7 +7,7 @@ from heightmap_renderer._coordinate_int_2d import _CoordinateInt2D
 class _Tile:
     """Represents a quad tile on the heightmap."""
 
-    def __init__(self, heightmap: list[list[int]], location: _CoordinateInt2D) -> None:
+    def __init__(self, heightmap, location: _CoordinateInt2D) -> None:  # noqa: ANN001
         """
         Parameters
         ----------

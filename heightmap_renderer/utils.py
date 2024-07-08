@@ -4,23 +4,23 @@ from heightmap_renderer import _SQRT_2
 from heightmap_renderer._coordinate_int_2d import ZERO_COORDINATE_2D, _CoordinateInt2D
 
 
-def heightmap_size(heightmap: list[list[int]]) -> _CoordinateInt2D:
+def heightmap_size(heightmap) -> _CoordinateInt2D:  # noqa: ANN001
     """Return the size of the heightmap."""
-    return _CoordinateInt2D(len(heightmap), len(heightmap[0]))
+    return _CoordinateInt2D(*heightmap.shape)
 
 
-def heightmap_lowest(heightmap: list[list[int]]) -> int:
+def heightmap_lowest(heightmap) -> int:  # noqa: ANN001
     """Return the lowest value in the heightmap."""
-    lowest = min(min(row) for row in heightmap)
+    lowest = heightmap.min()
     if lowest < 0:
         err_msg = "Heightmap values must be >= 0."
         raise ValueError(err_msg)
     return lowest
 
 
-def heightmap_highest(heightmap: list[list[int]]) -> int:
+def heightmap_highest(heightmap) -> int:  # noqa: ANN001
     """Return the highest value in the heightmap."""
-    return max(max(row) for row in heightmap)
+    return heightmap.max()
 
 
 def normalise_8bit(

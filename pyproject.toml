@@ -9,6 +9,7 @@ packages = [{include = "heightmap_renderer"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 pillow = "^10.3.0"
+numpy = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"
@@ -20,6 +21,7 @@ mypy = "^1.10.0"
 pytest = "^8.2.2"
 
 [tool.mypy]
+plugins = "numpy.typing.mypy_plugin"
 strict = true
 warn_unused_configs = true
 enable_error_code = ["ignore-without-code"]  # Require specific codes for ignores

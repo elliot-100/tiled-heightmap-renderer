@@ -1,5 +1,6 @@
 """SimpleRenderer class module."""
 
+import numpy as np
 from PIL import Image
 
 from heightmap_renderer.utils import (
@@ -30,7 +31,7 @@ class SimpleRenderer:
         scale
             Scale factor to apply
         """
-        self.heightmap = heightmap
+        self.heightmap = np.array(heightmap)
         """Initially implemented as simple Python array (list of list)."""
         self._lowest = heightmap_lowest(self.heightmap)
         self._highest = heightmap_highest(self.heightmap)
