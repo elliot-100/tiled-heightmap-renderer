@@ -55,14 +55,13 @@ class _TileRenderer:
 
         draw_points = [
             isometric_projection(
-                x=(self.tile.location.x + dx) * self.scale,
-                y=(self.tile.location.y + dy) * self.scale,
+                xy=(self.tile.location + offset) * self.scale,
                 z=round(
                     self.tile.vertex_heights[count] * self.scale * self.relief_scale
                 ),
                 output_offset=self.offset,
             )
-            for count, (dx, dy) in enumerate(_CORNER_OFFSETS)
+            for count, offset in enumerate(_CORNER_OFFSETS)
         ]
 
         self.draw_context.polygon(

@@ -21,6 +21,6 @@ class _Tile:
     @property
     def vertex_heights(self) -> list[int]:
         return [
-            self.heightmap[self.location.x + dx][self.location.y + dy]
-            for (dx, dy) in _CORNER_OFFSETS
+            self.heightmap[(self.location + offset).x][(self.location + offset).y]
+            for offset in _CORNER_OFFSETS
         ]
