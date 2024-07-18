@@ -1,4 +1,4 @@
-"""SimpleRenderer class module."""
+"""Module containing `Simple_Renderer` class."""
 
 from PIL import Image
 
@@ -21,14 +21,14 @@ class SimpleRenderer:
         heightmap: list[list[int]],
         scale: int = 1,
     ) -> None:
-        """Create a new SimpleRenderer instance.
+        """Create a new `SimpleRenderer` instance.
 
         Parameters
         ----------
         heightmap
-            Values must be >= 0
+            Values must be >= 0.
         scale
-            Scale factor to apply
+            Scale factor to apply.
         """
         self.heightmap = heightmap
         """Initially implemented as simple Python array (list of list)."""

@@ -1,4 +1,4 @@
-"""TiledReliefRenderer class module."""
+"""Module containing `TiledReliefRenderer` class."""
 
 from PIL import Image, ImageDraw
 
@@ -22,6 +22,7 @@ class TiledReliefRenderer:
     def __init__(
         self,
         heightmap: list[list[int]],
+        # Values must be >= 0
         scale: int = 1,
         relief_scale: float = 1,
         shader: str = "height",
@@ -40,10 +41,10 @@ class TiledReliefRenderer:
         relief_scale
             Additional z/height scale factor
         shader
-            "height" (default) or
+            `"height"` (default) or
             "depth"
         debug_renderer
-            True: draw extra features for debugging.
+            `True`: draw extra features for debugging.
             Defaults to False
         """
         self.heightmap = heightmap
